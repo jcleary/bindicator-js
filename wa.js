@@ -12,17 +12,14 @@ function start(client) {
   const yaml = require('js-yaml');
 
   const config = yaml.load(fs.readFileSync('config.yaml', 'utf8'));
-  const bin_chat = config.bin_chat;
-  const website_url = config.website_url;
   const bins = config.bins.map(bin => ({
     ...bin,
     startDate: new Date(bin.startDate)
   }));
 
-  // Get next Thursday
+  // Get next bin day
   const binDay = new Date();
-
-  while (binDay.getDay() !== 4) {
+  while (binDay.getDay() !== config.bin_day_of_week) {
     binDay.setDate(binDay.getDate() + 1);
   }
 
@@ -46,9 +43,9 @@ function start(client) {
     message += "No bins scheduled for collection this week.";
   }
 
-  message += "\n\nMore info at: " + website_url;
+  message += "\n\nMore info at: " + config.website_url;
 
-  client.sendText(bin_chat, message);
+  client.sendText(config.bin_chat, message);
   console.log('Message Sent');
   console.log(message);
 }

@@ -1,6 +1,6 @@
 bin_chat: '120363402755630431@g.us'
 website_url: 'https://tinyurl.com/hilltop-bindicator'
-
+bin_day_of_week: 4 # Thursday
 bins:
   - color: "🟦 Blue"
     startDate: "2025-06-05"
