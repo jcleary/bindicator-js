@@ -17,14 +17,17 @@ function start(client) {
     { color: "⬛ Black", startDate: new Date(2025, 12, 20), cycleWeeks: 2 }
   ];
 
-// Get current date
-  const today = new Date();
+  // Get next Thursday
+  const binDay = new Date();
 
+  while (binDay.getDay() !== 4) {
+    binDay.setDate(binDay.getDate() + 1);
+  }
 
   // Find which bins are due this week
   const dueBins = bins.filter(bin => {
     // Calculate weeks since the start date
-    const diffTime = Math.abs(today - bin.startDate);
+    const diffTime = Math.abs(binDay - bin.startDate);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     const diffWeeks = Math.floor(diffDays / 7);
 
@@ -32,13 +35,11 @@ function start(client) {
     return diffWeeks % bin.cycleWeeks === 0;
   });
 
-  // Generate message for due bins
-  let message = "🗑️ Bins for collection this week:\n\n";
-
-    if (dueBins.length > 0) {
-    dueBins.forEach(bin => {
-      message += `- ${bin.color}\n`;
-    });
+  // Create a message based on which mins are due
+  let message = '';
+  if (dueBins.length > 0) {
+    message += "Bins for collection this week (" + binDay.toString() + ") :\n\n";
+    message += dueBins.map(bin => bin.color).join('\n\n');
   } else {
     message += "No bins scheduled for collection this week.";
   }
