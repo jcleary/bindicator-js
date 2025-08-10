@@ -11,10 +11,10 @@ function start(client) {
   const bin_chat = '120363402755630431@g.us';
 
   const bins = [
-    { color: "🟦 Blue", startDate: new Date(2025, 0, 6), cycleWeeks: 2 },
-    { color: "🟩 Green", startDate: new Date(2025, 0, 13), cycleWeeks: 2 },
-    { color: "🟫 Brown", startDate: new Date(2025, 0, 6), cycleWeeks: 1 },
-    { color: "⬛ Black", startDate: new Date(2025, 0, 20), cycleWeeks: 4 }   
+    { color: "🟦 Blue", startDate: new Date(2025, 5, 5), cycleWeeks: 4 },
+    { color: "🟩 Green", startDate: new Date(2025, 5, 5), cycleWeeks: 1 },
+    { color: "🟫 Brown", startDate: new Date(2025, 5, 5), cycleWeeks: 4 },
+    { color: "⬛ Black", startDate: new Date(2025, 12, 20), cycleWeeks: 2 }
   ];
 
 // Get current date
