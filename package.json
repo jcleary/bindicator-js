@@ -11,6 +11,7 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "@open-wa/wa-automate": "^4.76.0"
+    "@open-wa/wa-automate": "^4.76.0",
+    "js-yaml": "^4.1.0"
   }
 }

@@ -1,0 +1,16 @@
+bin_chat: '120363402755630431@g.us'
+website_url: 'https://tinyurl.com/hilltop-bindicator'
+
+bins:
+  - color: "🟦 Blue"
+    startDate: "2025-06-05"
+    cycleWeeks: 4
+  - color: "🟩 Green"
+    startDate: "2025-06-05"
+    cycleWeeks: 1
+  - color: "🟫 Brown"
+    startDate: "2025-06-05"
+    cycleWeeks: 4
+  - color: "⬛ Black"
+    startDate: "2026-01-20"
+    cycleWeeks: 2

@@ -8,15 +8,16 @@ create({
 }).then(client => start(client));
 
 function start(client) {
-  const bin_chat = '120363402755630431@g.us';
-  const website_url = 'https://tinyurl.com/hilltop-bindicator';
+  const fs = require('fs');
+  const yaml = require('js-yaml');
 
-  const bins = [
-    { color: "🟦 Blue", startDate: new Date(2025, 5, 5), cycleWeeks: 4 },
-    { color: "🟩 Green", startDate: new Date(2025, 5, 5), cycleWeeks: 1 },
-    { color: "🟫 Brown", startDate: new Date(2025, 5, 5), cycleWeeks: 4 },
-    { color: "⬛ Black", startDate: new Date(2025, 12, 20), cycleWeeks: 2 }
-  ];
+  const config = yaml.load(fs.readFileSync('config.yaml', 'utf8'));
+  const bin_chat = config.bin_chat;
+  const website_url = config.website_url;
+  const bins = config.bins.map(bin => ({
+    ...bin,
+    startDate: new Date(bin.startDate)
+  }));
 
   // Get next Thursday
   const binDay = new Date();
