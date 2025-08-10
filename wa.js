@@ -39,7 +39,7 @@ function start(client) {
   // Create a message based on which mins are due
   let message = '';
   if (dueBins.length > 0) {
-    message += "Bins for collection this week (" + binDay.toString() + ") :\n\n";
+    message += "Bins for collection this week (" + binDay.toDateString() + ") :\n\n";
     message += dueBins.map(bin => bin.color).join('\n\n');
   } else {
     message += "No bins scheduled for collection this week.";
