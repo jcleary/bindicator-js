@@ -9,6 +9,7 @@ create({
 
 function start(client) {
   const bin_chat = '120363402755630431@g.us';
+  const website_url = 'https://tinyurl.com/hilltop-bindicator';
 
   const bins = [
     { color: "🟦 Blue", startDate: new Date(2025, 5, 5), cycleWeeks: 4 },
@@ -44,6 +45,7 @@ function start(client) {
     message += "No bins scheduled for collection this week.";
   }
 
+  message += "\n\nMore info at: " + website_url;
 
   client.sendText(bin_chat, message);
   console.log('Message Sent');
