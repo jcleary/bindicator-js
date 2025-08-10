@@ -1,0 +1,51 @@
+const { create } = require('@open-wa/wa-automate');
+
+create({
+  headless: true, // Set to false if you want to see the browser
+  qrTimeout: 0,   // Never timeout waiting for QR scan
+  authTimeout: 60, // Wait 60 seconds for login
+  multiDevice: true, // Enable if using multi-device
+}).then(client => start(client));
+
+function start(client) {
+  const bin_chat = '120363402755630431@g.us';
+
+  const bins = [
+    { color: "🟦 Blue", startDate: new Date(2025, 0, 6), cycleWeeks: 2 },
+    { color: "🟩 Green", startDate: new Date(2025, 0, 13), cycleWeeks: 2 },
+    { color: "🟫 Brown", startDate: new Date(2025, 0, 6), cycleWeeks: 1 },
+    { color: "⬛ Black", startDate: new Date(2025, 0, 20), cycleWeeks: 4 }   
+  ];
+
+// Get current date
+  const today = new Date();
+
+
+  // Find which bins are due this week
+  const dueBins = bins.filter(bin => {
+    // Calculate weeks since the start date
+    const diffTime = Math.abs(today - bin.startDate);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const diffWeeks = Math.floor(diffDays / 7);
+
+    // If the number of weeks is divisible by the cycle, the bin is due
+    return diffWeeks % bin.cycleWeeks === 0;
+  });
+
+  // Generate message for due bins
+  let message = "🗑️ Bins for collection this week:\n\n";
+
+    if (dueBins.length > 0) {
+    dueBins.forEach(bin => {
+      message += `- ${bin.color}\n`;
+    });
+  } else {
+    message += "No bins scheduled for collection this week.";
+  }
+
+
+  client.sendText(bin_chat, message);
+  console.log('Message Sent');
+  console.log(message);
+}
+
