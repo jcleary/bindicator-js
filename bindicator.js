@@ -9,16 +9,19 @@ create({
   multiDevice: true, // Enable if using multi-device
 }).then(client => start(client));
 
-function start(client) {
+async function start(client) {
   const config = loadConfig();
   const bins = parseBins(config.bins);
   const binDay = getNextBinDay(config.bin_day_of_week);
   const dueBins =getDueBins(bins, binDay);
   const message = createBinMessage(dueBins, binDay, config);
 
-  client.sendText(config.bin_chat, message);
+  await client.sendText(config.bin_chat, message);
   console.log('Message Sent');
   console.log(message);
+
+  await delay(30000);
+  process.exit(0);
 }
 
 function loadConfig() {
@@ -58,6 +61,10 @@ function createBinMessage(dueBins, binDay, config) {
 
   const binColors = dueBins.map(bin => bin.color).join('\n\n');
   return `Bins for collection this week (${binDay.toDateString()}) :\n\n${binColors}${footer}`;
+}
+
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 
