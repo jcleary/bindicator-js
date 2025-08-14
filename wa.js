@@ -50,13 +50,14 @@ function getDueBins(bins, binDay) {
 }
 
 function createBinMessage(dueBins, binDay, config) {
+  const footer = `\n\nMore info at: ${config.website_url}`;
 
   if (dueBins.length === 0) {
-    return `No bins scheduled for collection this week.\n\nMore info at: ${config.website_url}`;
+    return `No bins scheduled for collection this week.${footer}`;
   }
 
   const binColors = dueBins.map(bin => bin.color).join('\n\n');
-  return `Bins for collection this week (${binDay.toDateString()}) :\n\n${binColors}\n\nMore info at: ${config.website_url}`;
+  return `Bins for collection this week (${binDay.toDateString()}) :\n\n${binColors}${footer}`;
 }
 
 
