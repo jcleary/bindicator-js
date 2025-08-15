@@ -10,6 +10,8 @@ create({
 }).then(client => start(client));
 
 async function start(client) {
+  await dumpGroupChats(client);
+
   const config = loadConfig();
   const bins = parseBins(config.bins);
   const binDay = getNextBinDay(config.bin_day_of_week);
@@ -65,6 +67,17 @@ function createBinMessage(dueBins, binDay, config) {
 
 function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function dumpGroupChats(client) {
+  const chats = await client.getAllChats();
+  const groups = chats.filter(chat => chat.isGroup);
+
+  console.log("Group chats:")
+  groups.forEach(group => {
+    console.log(`${group.name} - ${group.id}`);
+  });
+  console.log("\n\n");
 }
 
 
