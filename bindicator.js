@@ -10,7 +10,7 @@ create({
 }).then(client => start(client));
 
 async function start(client) {
-  await dumpGroupChats(client);
+  // await dumpGroupChats(client);
 
   const config = loadConfig();
   const bins = parseBins(config.bins);
