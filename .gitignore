@@ -2,3 +2,6 @@
 /.codebuddy
 /session
 /.node-persist
+/_IGNORE_*
+/open-wa-session.*.json
+/session.data.json

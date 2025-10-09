@@ -1,11 +1,15 @@
 // app.js
-// Rewritten: sends via local API POST /group_message instead of wa-automate client
+// Uses the built-in @open-wa EASY API at http://localhost:3800/sendText
 
 const fs = require('fs');
 const yaml = require('js-yaml');
 const http = require('http');
 const https = require('https');
 const { URL } = require('url');
+
+const BASE_URL = process.env.WA_BASE_URL || 'http://localhost:3800';
+const SENDTEXT_PATH = process.env.WA_SENDTEXT_PATH || '/sendText';
+const API_KEY = process.env.WA_API_KEY || ''; // set if you started open-wa with -k
 
 (async function main() {
   const config = loadConfig();
@@ -17,11 +21,11 @@ const { URL } = require('url');
   const message = createBinMessage(dueBins, binDay, config);
 
   try {
-    // Send message to the group
-    await postJSON('http://localhost:3800/group_message', {
-      group_id: config.bin_chat,
-      message
-    });
+    const to = toJid(config.bin_chat);
+    await postJSON(`${BASE_URL}${SENDTEXT_PATH}`, {
+      args: { to, content: message }
+    }, API_KEY && { 'x-api-key': API_KEY });
+
     console.log('Message Sent');
     console.log(message);
   } catch (e) {
@@ -69,12 +73,27 @@ function createBinMessage(dueBins, binDay, config) {
   return `Bins for collection this week (${binDay.toDateString()}) :\n\n${binColors}${footer}`;
 }
 
-function delay(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+// ---- HELPER: normalise chat id to a WhatsApp JID ----
+function toJid(input) {
+  let s = String(input || '').trim();
+  if (!s) throw new Error('Empty bin_chat in config');
+
+  // already a JID?
+  if (/@(c|g)\.us$/i.test(s)) return s;
+
+  // remove spaces/plus/dashes for number detection
+  const digits = s.replace(/\D/g, '');
+
+  // group ids usually contain a hyphen; if user passed just the numeric parts joined by '-', treat as group
+  if (s.includes('-')) return `${s}@g.us`;
+
+  // otherwise assume it's a direct number
+  if (!digits) throw new Error(`Invalid chat id: ${s}`);
+  return `${digits}@c.us`;
 }
 
-// Minimal helper to POST JSON with core Node modules
-function postJSON(urlString, payload) {
+// ---- Minimal POST JSON helper using core modules ----
+function postJSON(urlString, payload, extraHeaders = {}) {
   return new Promise((resolve, reject) => {
     const url = new URL(urlString);
     const data = JSON.stringify(payload);
@@ -86,7 +105,8 @@ function postJSON(urlString, payload) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Content-Length': Buffer.byteLength(data)
+        'Content-Length': Buffer.byteLength(data),
+        ...extraHeaders
       },
       timeout: 15000
     };
@@ -96,22 +116,23 @@ function postJSON(urlString, payload) {
       let body = '';
       res.on('data', chunk => (body += chunk));
       res.on('end', () => {
+        // 2xx => success
+        if (res.statusCode >= 200 && res.statusCode < 300) {
+          try { return resolve(body ? JSON.parse(body) : {}); }
+          catch { return resolve({ raw: body }); }
+        }
+        // non-2xx => error
         try {
           const json = body ? JSON.parse(body) : {};
-          if (res.statusCode >= 200 && res.statusCode < 300) {
-            return resolve(json);
-          }
           return reject(new Error(json?.error || `HTTP ${res.statusCode}: ${body}`));
-        } catch (e) {
-          return reject(new Error(`Invalid JSON response: ${body}`));
+        } catch {
+          return reject(new Error(`HTTP ${res.statusCode}: ${body}`));
         }
       });
     });
 
     req.on('error', reject);
-    req.on('timeout', () => {
-      req.destroy(new Error('Request timed out'));
-    });
+    req.on('timeout', () => req.destroy(new Error('Request timed out')));
 
     req.write(data);
     req.end();
