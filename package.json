@@ -1,17 +1,14 @@
 {
-  "name": "wa",
+  "name": "wa-group-server",
   "version": "1.0.0",
-  "description": "",
-  "main": "wa.js",
+  "private": true,
+  "main": "server.js",
+  "license": "MIT",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
-    "@open-wa/wa-automate": "^4.76.0",
-    "js-yaml": "^4.1.0"
+    "@open-wa/wa-automate": "^4.76",
+    "express": "^4.19.2"
   }
 }
